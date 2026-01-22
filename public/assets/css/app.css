@@ -1,0 +1,243 @@
+/* =========================================================
+   Dark Layout Base
+   ========================================================= */
+
+.app-bg {
+    min-height: 100vh;
+    background:
+        radial-gradient(1200px 600px at 10% -10%, #1e293b 0%, transparent 60%),
+        radial-gradient(1000px 500px at 90% 10%, #0f172a 0%, transparent 55%),
+        linear-gradient(180deg, #020617 0%, #020617 100%);
+    color: #e5e7eb;
+}
+
+/* =========================================================
+   Typography
+   ========================================================= */
+
+.app-bg h1,
+.app-bg h2,
+.app-bg h3,
+.app-bg h4,
+.app-bg h5,
+.app-bg h6 {
+    color: #f8fafc;
+}
+
+.app-bg p,
+.app-bg span,
+.app-bg li,
+.app-bg label,
+.app-bg .form-label {
+    color: #e5e7eb;
+}
+
+.app-bg .text-muted {
+    color: #9ca3af !important;
+}
+
+/* =========================================================
+   Links
+   ========================================================= */
+
+.app-bg a {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.app-bg a:hover {
+    color: #93c5fd;
+    text-decoration: underline;
+}
+
+/* =========================================================
+   Forms
+   ========================================================= */
+
+.app-bg .form-control {
+    background-color: #020617;
+    border-color: #334155;
+    color: #e5e7eb;
+}
+
+.app-bg .form-control::placeholder {
+    color: #94a3b8;
+}
+
+.app-bg .form-control:focus {
+    background-color: #020617;
+    color: #f8fafc;
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 0.15rem rgba(96, 165, 250, 0.25);
+}
+
+.app-bg .form-check-input {
+    background-color: #020617;
+    border-color: #334155;
+}
+
+.app-bg .form-check-input:checked {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+
+.app-bg .btn-primary {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.app-bg .btn-primary:hover {
+    background-color: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+/* =========================================================
+   Alerts
+   ========================================================= */
+
+.app-bg .alert {
+    background-color: #020617;
+    border-color: #334155;
+    color: #e5e7eb;
+}
+
+/* =========================================================
+   Cards
+   ========================================================= */
+
+.card-dark {
+    background-color: #020617;
+    color: #e5e7eb;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-dark .card-header,
+.card-dark .card-footer {
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* =========================================================
+   Tables (на будущее)
+   ========================================================= */
+
+.app-bg .table {
+    color: #e5e7eb;
+}
+
+.app-bg .table thead th {
+    color: #f8fafc;
+    border-bottom-color: #334155;
+}
+
+.app-bg .table td,
+.app-bg .table th {
+    border-top-color: #334155;
+}
+
+/* =========================================================
+   Helpers
+   ========================================================= */
+
+.min-vh-75 {
+    min-height: 75vh;
+}
+
+/* =========================================================
+   Light card fixes (for dark background)
+   ========================================================= */
+
+.card-light {
+    color: #111827; /* основной текст */
+}
+
+.card-light h1,
+.card-light h2,
+.card-light h3,
+.card-light h4,
+.card-light h5,
+.card-light h6 {
+    color: #111827;
+}
+
+.card-light .text-muted {
+    color: #6b7280 !important;
+}
+
+.card-light label,
+.card-light .form-label {
+    color: #374151;
+}
+
+.card-light .form-control {
+    background-color: #ffffff;
+    color: #111827;
+    border-color: #d1d5db;
+}
+
+.card-light .form-control::placeholder {
+    color: #9ca3af;
+}
+
+.card-light .form-control:focus {
+    background-color: #ffffff;
+    color: #111827;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 .15rem rgba(37, 99, 235, .25);
+}
+
+/* =========================================================
+   Dark Modal
+   ========================================================= */
+.modal-dark .modal-content {
+    background-color: #020617;
+    color: #e5e7eb;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.modal-dark .modal-header,
+.modal-dark .modal-footer {
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.modal-dark .modal-title {
+    color: #f8fafc;
+}
+
+.modal-dark .modal-body p,
+.modal-dark .modal-body span,
+.modal-dark .modal-body li,
+.modal-dark .modal-body label,
+.modal-dark .modal-body .form-label {
+    color: #e5e7eb;
+}
+
+.modal-dark .modal-body .form-control {
+    background-color: #020617;
+    color: #e5e7eb;
+    border-color: #334155;
+}
+
+.modal-dark .modal-body .form-control::placeholder {
+    color: #94a3b8;
+}
+
+.modal-dark .modal-body .form-control:focus {
+    background-color: #020617;
+    color: #f8fafc;
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 0.15rem rgba(96, 165, 250, 0.25);
+}
+
+.modal-dark .modal-body .form-check-input {
+    background-color: #020617;
+    border-color: #334155;
+}
+
+.modal-dark .modal-body .form-check-input:checked {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}

@@ -1,10 +1,17 @@
-@extends("layouts.bootstrap")
+@extends("layouts.auth")
+@section('pageTitle', 'Tasks')
 @section("content")
     <h1>Tasks</h1>
 
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
         </div>
     @endif
 
@@ -31,39 +38,24 @@
             <tr>
                 <td>{{ $task->id }}</td>
                 <td>{{ $task->user_id }}</td>
-                <td class="table-info">{{ $task->description }}</td>
+                <td>{{ $task->description }}</td>
                 <td>{{ $task->priority }}</td>
                 <td>{{ $task->status }}</td>
                 <td>{{ $task->created_at }}</td>
                 <td>
-                    <button class="btn btn-primary btn-lg edit-task-button" type="button" data-bs-toggle="modal"
-                            data-bs-target="#taskModal" data-task-id="{{ $task->id }}">Update
-                    </button>
+                    <a href="{{ route('tasks.edit.view', ['id' => $task->id]) }}" class="btn btn-primary btn-lg edit-task-button">Update</a>
                     <a href="#" class="btn btn-secondary btn-lg disabled" tabindex="-1" role="button"
                        aria-disabled="true">Delete</a>
                 </td>
             </tr>
         @endforeach
         </tbody>
-        <nav aria-label="...">
-            <ul class="pagination">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
     </table>
-    <button type="button" class="btn btn-primary btn-lg">Create new Task</button>
-
-    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="d-flex justify-content-center mt-3">
+        {{ $tasks->links() }}
+    </div>
+    <a href="{{ route('tasks.create.view') }}" class="btn btn-primary btn-lg edit-task-button">Create</a>
+    <div class="modal fade modal-dark" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
