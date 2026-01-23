@@ -84,7 +84,7 @@
 
                         <div class="text-center mt-4 small text-muted">
                             Already have an account?
-                            <a href="{{ route('loginView') }}" class="text-decoration-none">
+                            <a href="{{ route('login.view') }}" class="text-decoration-none">
                                 Sign in
                             </a>
                         </div>

@@ -12,26 +12,22 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    /**
-     * @param Request $request
-     * @return RedirectResponse
-     */
     public function login(Request $request): RedirectResponse
     {
-        $email = (string)$request->input('email', '');
-        $password = (string)$request->input('password', '');
+        $email = (string) $request->input('email', '');
+        $password = (string) $request->input('password', '');
 
         $user = User::query()->where('email', $email)->first();
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->back()->with([
-                'error' => 'User not found'
+                'error' => 'User not found',
             ]);
         }
 
-        if (!Hash::check($password, $user->password)) {
+        if (! Hash::check($password, $user->password)) {
             return redirect()->back()->with([
-                'error' => 'Invalid password'
+                'error' => 'Invalid password',
             ]);
         }
 
@@ -40,14 +36,11 @@ class AuthController extends Controller
         return redirect()->route('home');
     }
 
-    /**
-     * @return RedirectResponse
-     */
     public function logout(): RedirectResponse
     {
         Auth::logout();
 
-        return redirect()->route('loginView');
+        return redirect()->route('login.view');
     }
 
     public function store(RegisterUserRequest $request): RedirectResponse
@@ -61,11 +54,14 @@ class AuthController extends Controller
         return redirect()->route('home');
     }
 
-    /**
-     * @return View
-     */
     public function register(): View
     {
         return view('auth.register');
+    }
+
+    public function temp()
+    {
+        $user = User::query()->find(16);
+        dd($user->tasks[1]);
     }
 }

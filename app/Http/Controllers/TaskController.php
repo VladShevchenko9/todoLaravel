@@ -12,7 +12,8 @@ class TaskController extends Controller
 {
     public function index(): View
     {
-        $tasks = Task::query()->orderBy('created_at', 'desc')->paginate(3);
+        $user = auth()->user();
+        $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(3);
 
         return view('tasks', compact('tasks'));
     }
@@ -39,10 +40,7 @@ class TaskController extends Controller
 
     public function store(CreateTaskRequest $request): RedirectResponse
     {
-        $data = $request->validated();
-        $data['user_id'] = auth()->id();
-
-        Task::query()->create($data);
+        Task::query()->create($request->validated());
 
         return redirect()
             ->route('tasks.index')
@@ -65,5 +63,26 @@ class TaskController extends Controller
     public function create(): View
     {
         return view('createTask');
+    }
+
+    public function delete(int $id): RedirectResponse|View
+    {
+        $deletedTotal = Task::query()->where('id', $id)->delete();
+
+        if (! $deletedTotal) {
+            return redirect()
+                ->route('tasks.index')
+                ->with('error', 'Task not found!');
+        }
+
+        return redirect()
+            ->route('tasks.index')
+            ->with('success', 'Task deleted successfully!');
+    }
+
+    public function temp()
+    {
+        $task = Task::query()->first();
+        dd($task);
     }
 }

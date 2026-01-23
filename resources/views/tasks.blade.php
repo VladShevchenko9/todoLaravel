@@ -43,9 +43,16 @@
                 <td>{{ $task->status }}</td>
                 <td>{{ $task->created_at }}</td>
                 <td>
-                    <a href="{{ route('tasks.edit.view', ['id' => $task->id]) }}" class="btn btn-primary btn-lg edit-task-button">Update</a>
-                    <a href="#" class="btn btn-secondary btn-lg disabled" tabindex="-1" role="button"
-                       aria-disabled="true">Delete</a>
+                    <a href="{{ route('tasks.edit.view', ['id' => $task->id]) }}" class="btn btn-primary btn-lg">Update</a>
+                    <form action="{{ route('tasks.delete', ['id' => $task->id]) }}"
+                          method="POST"
+                          style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-secondary btn-lg">
+                            Delete
+                        </button>
+                    </form>
                 </td>
             </tr>
         @endforeach
@@ -54,7 +61,7 @@
     <div class="d-flex justify-content-center mt-3">
         {{ $tasks->links() }}
     </div>
-    <a href="{{ route('tasks.create.view') }}" class="btn btn-primary btn-lg edit-task-button">Create</a>
+    <a href="{{ route('tasks.create.view') }}" class="btn btn-primary btn-lg">Create</a>
     <div class="modal fade modal-dark" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -104,21 +111,4 @@
             </div>
         </div>
     </div>
-@endsection
-@section("customScripts")
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#saveTaskBtn").click(function () {
-                $('#taskFormSubmitBtn').click();
-            });
-
-            $(".edit-task-button").click(function () {
-                const button = $(this);
-                const taskId = button.data('task-id');
-                const action = `/tasks/${taskId}/edit`;
-                $('#taskForm').attr('action', action);
-            });
-        });
-
-    </script>
 @endsection

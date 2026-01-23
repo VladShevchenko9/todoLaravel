@@ -4,7 +4,6 @@
     <form action="{{ route('tasks.create') }}" id="taskForm" method="post">
         @csrf
 
-        {{-- Description --}}
         <div class="mb-3">
             <div class="form-floating">
                 <textarea

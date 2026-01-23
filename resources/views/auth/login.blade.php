@@ -59,7 +59,7 @@
 
                         <div class="text-center mt-4 small text-muted">
                             Don’t have an account?
-                            <a href="{{ route('registerView') }}" class="text-decoration-none">
+                            <a href="{{ route('register.view') }}" class="text-decoration-none">
                                 Register
                             </a>
                         </div>
