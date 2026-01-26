@@ -5,15 +5,39 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
+use App\Services\TaskService;
+use App\Structures\SearchTasksData;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 class TaskController extends Controller
 {
-    public function index(): View
+    public function index(Request $request, TaskService $taskService)
     {
-        $user = auth()->user();
-        $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(3);
+        $userId = (int) auth()->id();
+
+        $validator = Validator::make($request->query(), [
+            'description' => 'string|min:5|max:255|nullable',
+            'priority' => 'integer|min:1|max:5|nullable',
+            'status' => 'boolean|nullable',
+            'exactMatch' => 'boolean|nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()
+                ->route('tasks.index')
+                ->with('error', 'Invalid search parameters.');
+        }
+
+        $searchData = new SearchTasksData($userId);
+        $searchData->description = $request->query('description', '');
+        $searchData->priority = $request->query('priority', 0);
+        $searchData->status = $request->query('status');
+        $searchData->exactMatch = (bool) $request->query('exactMatch', true);
+
+        $tasks = $taskService->getTasksWithFilters($searchData);
 
         return view('tasks', compact('tasks'));
     }
@@ -78,11 +102,5 @@ class TaskController extends Controller
         return redirect()
             ->route('tasks.index')
             ->with('success', 'Task deleted successfully!');
-    }
-
-    public function temp()
-    {
-        $task = Task::query()->first();
-        dd($task);
     }
 }

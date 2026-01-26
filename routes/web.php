@@ -25,13 +25,13 @@ Route::post('/register', [AuthController::class, 'store'])->name('store');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index');
-    Route::get('tasks/{id}/edit', [TaskController::class, 'edit'])->name('tasks.edit.view');
     Route::get('tasks/create', [TaskController::class, 'create'])->name('tasks.create.view');
-
-    Route::get('temp', [AuthController::class, 'temp']);
-
     Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index');
-    Route::post('tasks/{id}/edit', [TaskController::class, 'update'])->name('tasks.edit');
     Route::post('tasks/create', [TaskController::class, 'store'])->name('tasks.create');
-    Route::delete('tasks/{id}/delete', [TaskController::class, 'delete'])->name('tasks.delete');
+
+    Route::middleware(['task.owner'])->group(function () {
+        Route::get('tasks/{id}/edit', [TaskController::class, 'edit'])->name('tasks.edit.view');
+        Route::post('tasks/{id}/edit', [TaskController::class, 'update'])->name('tasks.edit');
+        Route::delete('tasks/{id}/delete', [TaskController::class, 'delete'])->name('tasks.delete');
+    });
 });

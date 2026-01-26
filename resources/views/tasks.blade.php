@@ -59,7 +59,7 @@
         </tbody>
     </table>
     <div class="d-flex justify-content-center mt-3">
-        {{ $tasks->links() }}
+        {{ $tasks->appends(request()->query())->links() }}
     </div>
     <a href="{{ route('tasks.create.view') }}" class="btn btn-primary btn-lg">Create</a>
     <div class="modal fade modal-dark" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">

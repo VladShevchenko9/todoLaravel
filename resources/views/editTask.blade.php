@@ -48,7 +48,6 @@
             </div>
         </div>
 
-        {{-- Status --}}
         <div class="mb-3">
             <div class="form-check form-switch">
                 <input type="hidden" name="status" value="0">

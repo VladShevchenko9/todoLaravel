@@ -58,10 +58,4 @@ class AuthController extends Controller
     {
         return view('auth.register');
     }
-
-    public function temp()
-    {
-        $user = User::query()->find(16);
-        dd($user->tasks[1]);
-    }
 }
