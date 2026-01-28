@@ -2,34 +2,47 @@
 
 namespace App\Services;
 
-use App\Models\Task;
+use App\Repositories\TaskRepository;
 use App\Structures\SearchTasksData;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class TaskService
+readonly class TaskService
 {
+    public function __construct(private TaskRepository $taskRepository) {}
+
     public function getTasksWithFilters(SearchTasksData $data): LengthAwarePaginator
     {
         $data->description = trim($data->description);
-        $query = Task::query()->where('user_id', $data->userId);
 
-        $query->where(function ($q) use ($data) {
+        $filters = ['user_id' => $data->userId];
+        $optionalFilters = [];
+        $searchPartials = [];
+        $optionalSearchPartials = [];
 
-            $method = $data->exactMatch ? 'where' : 'orWhere';
+        if ($data->description) {
+            $optionalSearchPartials['description'] = $data->description;
+        }
 
-            if ($data->description) {
-                $q->{$method}('description', 'like', '%'.$data->description.'%');
-            }
+        if ($data->priority) {
+            $optionalFilters['priority'] = $data->priority;
+        }
 
-            if ($data->priority) {
-                $q->{$method}('priority', $data->priority);
-            }
+        if (! is_null($data->status)) {
+            $optionalFilters['status'] = $data->status;
+        }
 
-            if (! is_null($data->status)) {
-                $q->{$method}('status', $data->status);
-            }
-        });
+        if ($data->exactMatch) {
+            $filters += $optionalFilters;
+            $optionalFilters = [];
+            $searchPartials = $optionalSearchPartials;
+            $optionalSearchPartials = [];
+        }
 
-        return $query->latest()->paginate(3);
+        return $this->taskRepository->paginateWithFilters(
+            $filters,
+            $optionalFilters,
+            $searchPartials,
+            $optionalSearchPartials
+        );
     }
 }
