@@ -17,6 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (UnauthorizedTaskActionException $e, Request $request) {
-            return view('tasks', []);
+            return redirect()
+                ->route('tasks.index')
+                ->with('error', $e->getMessage());
         });
     })->create();

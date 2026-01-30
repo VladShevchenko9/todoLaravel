@@ -13,6 +13,7 @@ class TaskActionAuthorizer
      * @param User $user
      * @param Task|null $task
      * @return void
+     * @throws UnauthorizedTaskActionException
      */
     public function authorizeAction(string $action, User $user, ?Task $task = null): void
     {
