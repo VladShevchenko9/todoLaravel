@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AbstractRepository
 {
-    private const LIMIT = 3;
+    private const LIMIT = 8;
 
     /** @var class-string<Model> */
     protected string $modelClass;

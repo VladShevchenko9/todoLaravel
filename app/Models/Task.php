@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Interfaces\Ownerable;
 use Database\Factories\TaskFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $status
  * @property-read User $user
  */
-class Task extends Model
+class Task extends Model implements Ownerable
 {
     /** @use HasFactory<TaskFactory> */
     use HasFactory;
@@ -29,5 +30,10 @@ class Task extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getOwner(): User
+    {
+        return $this->user;
     }
 }

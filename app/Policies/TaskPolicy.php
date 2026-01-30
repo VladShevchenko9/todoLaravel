@@ -8,7 +8,6 @@ use App\Policies\Traits\OwnerTrait;
 
 class TaskPolicy extends BasePolicy
 {
-
     use OwnerTrait;
 
     /**
@@ -16,7 +15,7 @@ class TaskPolicy extends BasePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**

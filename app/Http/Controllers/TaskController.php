@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
+use App\Services\TaskActionAuthorizer;
 use App\Services\TaskService;
 use App\Structures\SearchTasksData;
 use Illuminate\Http\RedirectResponse;
@@ -14,9 +15,18 @@ use Illuminate\View\View;
 
 class TaskController extends Controller
 {
+    private TaskActionAuthorizer $authorizer;
+
+    public function __construct(TaskActionAuthorizer $authorizer)
+    {
+        $this->authorizer = $authorizer;
+    }
+
     public function index(Request $request, TaskService $taskService)
     {
-        $userId = (int) auth()->id();
+        $this->authorizer->authorizeAction('viewAny', auth()->user());
+
+        $userId = (int)auth()->id();
 
         $validator = Validator::make($request->query(), [
             'description' => 'string|min:5|max:255|nullable',
@@ -35,7 +45,7 @@ class TaskController extends Controller
         $searchData->description = $request->query('description', '');
         $searchData->priority = $request->query('priority', 0);
         $searchData->status = $request->query('status');
-        $searchData->exactMatch = (bool) $request->query('exactMatch', true);
+        $searchData->exactMatch = (bool)$request->query('exactMatch', true);
 
         $tasks = $taskService->getTasksWithFilters($searchData);
 
@@ -46,11 +56,13 @@ class TaskController extends Controller
     {
         $task = Task::query()->find($id);
 
-        if (! $task) {
+        if (!$task) {
             return redirect()
                 ->route('tasks.index')
                 ->with('error', 'Task not found!');
         }
+
+        $this->authorizer->authorizeAction('update', auth()->user(), $task);
 
         $data = $request->validated();
         $data['user_id'] = auth()->id();
@@ -64,6 +76,7 @@ class TaskController extends Controller
 
     public function store(CreateTaskRequest $request): RedirectResponse
     {
+        $this->authorizer->authorizeAction('create', auth()->user());
         Task::query()->create($request->validated());
 
         return redirect()
@@ -75,29 +88,35 @@ class TaskController extends Controller
     {
         $task = Task::query()->find($id);
 
-        if (! $task) {
+        if (!$task) {
             return redirect()
                 ->route('tasks.index')
                 ->with('error', 'Task not found!');
         }
+
+        $this->authorizer->authorizeAction('update', auth()->user(), $task);
 
         return view('editTask', compact('task'));
     }
 
     public function create(): View
     {
+        $this->authorizer->authorizeAction('create', auth()->user());
         return view('createTask');
     }
 
     public function delete(int $id): RedirectResponse|View
     {
-        $deletedTotal = Task::query()->where('id', $id)->delete();
+        $task = Task::query()->find($id);
 
-        if (! $deletedTotal) {
+        if (!$task) {
             return redirect()
                 ->route('tasks.index')
                 ->with('error', 'Task not found!');
         }
+
+        $this->authorizer->authorizeAction('delete', auth()->user(), $task);
+        $task->delete();
 
         return redirect()
             ->route('tasks.index')

@@ -2,18 +2,18 @@
 
 namespace App\Policies\Traits;
 
+use App\Models\Interfaces\Ownerable;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 
 trait OwnerTrait
 {
     /**
      * @param User $user
-     * @param Model $model
+     * @param Ownerable $model
      * @return bool
      */
-    protected function owner(User $user, Model $model): bool
+    protected function owner(User $user, Ownerable $model): bool
     {
-        return property_exists($model, 'user_id') && $user->id == $model->user_id;
+        return $user->id == $model->getOwner()->id;
     }
 }
