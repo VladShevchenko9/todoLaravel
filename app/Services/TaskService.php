@@ -2,36 +2,42 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Repositories\TaskRepository;
 use App\Structures\SearchTasksData;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 readonly class TaskService
 {
-    public function __construct(private TaskRepository $taskRepository) {}
+    public function __construct(private TaskRepository $taskRepository)
+    {
+    }
 
     public function getTasksWithFilters(SearchTasksData $data): LengthAwarePaginator
     {
-        $data->description = trim($data->description);
 
-        $filters = ['user_id' => $data->userId];
+        $filters = ['user_id' => $data->getUser()->id];
         $optionalFilters = [];
         $searchPartials = [];
         $optionalSearchPartials = [];
 
-        if ($data->description) {
-            $optionalSearchPartials['description'] = $data->description;
+        if ($data->getUser()->isAdmin()) {
+            $filters = [];
         }
 
-        if ($data->priority) {
-            $optionalFilters['priority'] = $data->priority;
+        if ($data->getDescription()) {
+            $optionalSearchPartials['description'] = $data->getDescription();
         }
 
-        if (! is_null($data->status)) {
-            $optionalFilters['status'] = $data->status;
+        if ($data->getPriority()) {
+            $optionalFilters['priority'] = $data->getPriority();
         }
 
-        if ($data->exactMatch) {
+        if (!is_null($data->getStatus())) {
+            $optionalFilters['status'] = $data->getStatus();
+        }
+
+        if ($data->getExactMatch()) {
             $filters += $optionalFilters;
             $optionalFilters = [];
             $searchPartials = $optionalSearchPartials;

@@ -26,7 +26,7 @@ class TaskController extends Controller
     {
         $this->authorizer->authorizeAction('viewAny', auth()->user());
 
-        $userId = (int)auth()->id();
+        $user = auth()->user();
 
         $validator = Validator::make($request->query(), [
             'description' => 'string|min:5|max:255|nullable',
@@ -41,11 +41,11 @@ class TaskController extends Controller
                 ->with('error', 'Invalid search parameters.');
         }
 
-        $searchData = new SearchTasksData($userId);
-        $searchData->description = $request->query('description', '');
-        $searchData->priority = $request->query('priority', 0);
-        $searchData->status = $request->query('status');
-        $searchData->exactMatch = (bool)$request->query('exactMatch', true);
+        $searchData = new SearchTasksData($user);
+        $searchData->setDescription($request->query('description', ''));
+        $searchData->setPriority($request->query('priority', 0));
+        $searchData->setStatus($request->query('status'));
+        $searchData->setExactMatch((bool)$request->query('exactMatch', true));
 
         $tasks = $taskService->getTasksWithFilters($searchData);
 
