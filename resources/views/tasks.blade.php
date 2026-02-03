@@ -25,7 +25,9 @@
         <thead>
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">User ID</th>
+            @can('viewUserId')
+                <th scope="col">User ID</th>
+            @endcan
             <th scope="col">Description</th>
             <th scope="col">Priority</th>
             <th scope="col">Status</th>
@@ -37,7 +39,9 @@
         @foreach ($tasks as $task)
             <tr>
                 <td>{{ $task->id }}</td>
-                <td>{{ $task->user_id }}</td>
+                @can('viewUserId')
+                    <td>{{ $task->user_id }}</td>
+                @endcan
                 <td>{{ $task->description }}</td>
                 <td>{{ $task->priority }}</td>
                 <td>{{ $task->status }}</td>
