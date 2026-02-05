@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use App\Models\Role;
+use App\Models\User;
 use App\Repositories\TaskRepository;
 use App\Services\TaskService;
 use App\Structures\SearchTasksData;
@@ -14,7 +16,6 @@ class TaskServiceTest extends TestCase
     private const DESCRIPTION = 'partial description';
     private const STATUS = true;
     private const PRIORITY = 1;
-
     private array $filters = [];
     private array $optionalFilters = [];
     private array $searchPartials = [];
@@ -41,19 +42,19 @@ class TaskServiceTest extends TestCase
     {
         $this->taskService->getTasksWithFilters($data);
 
-        $this->assertSame($expectedFilters, $this->filters);
-        $this->assertSame($expectedOptionalFilters, $this->optionalFilters);
-        $this->assertSame($expectedSearchPartials, $this->searchPartials);
-        $this->assertSame($expectedOptionalSearchPartials, $this->optionalSearchPartials);
+        $this->assertEquals($expectedFilters, $this->filters);
+        $this->assertEquals($expectedOptionalFilters, $this->optionalFilters);
+        $this->assertEquals($expectedSearchPartials, $this->searchPartials);
+        $this->assertEquals($expectedOptionalSearchPartials, $this->optionalSearchPartials);
     }
 
     public function testOptionalMatchWithPriorityAndDescription(): void
     {
-        $data = new SearchTasksData(self::USER_ID);
-        $data->exactMatch = false;
-
-        $data->priority = self::PRIORITY;
-        $data->description = self::DESCRIPTION;
+        $user = self::makeUser();
+        $data = new SearchTasksData($user);
+        $data->setExactMatch(false);
+        $data->setPriority(self::PRIORITY);
+        $data->setDescription(self::DESCRIPTION);
 
         $expectedFilters = ['user_id' => self::USER_ID];
         $expectedOptionalFilters = ['priority' => self::PRIORITY];
@@ -62,10 +63,53 @@ class TaskServiceTest extends TestCase
 
         $this->taskService->getTasksWithFilters($data);
 
-        $this->assertSame($expectedFilters, $this->filters);
-        $this->assertSame($expectedOptionalFilters, $this->optionalFilters);
-        $this->assertSame($expectedSearchPartials, $this->searchPartials);
-        $this->assertSame($expectedOptionalSearchPartials, $this->optionalSearchPartials);
+        $this->assertEquals($expectedFilters, $this->filters);
+        $this->assertEquals($expectedOptionalFilters, $this->optionalFilters);
+        $this->assertEquals($expectedSearchPartials, $this->searchPartials);
+        $this->assertEquals($expectedOptionalSearchPartials, $this->optionalSearchPartials);
+    }
+
+    public function testOptionalMatchWithPriorityAndDescriptionForAdmin(): void
+    {
+        $user = self::makeAdmin();
+        $data = new SearchTasksData($user);
+        $data->setExactMatch(false);
+        $data->setPriority(self::PRIORITY);
+        $data->setDescription(self::DESCRIPTION);
+
+        $expectedFilters = [];
+        $expectedOptionalFilters = ['priority' => self::PRIORITY];
+        $expectedSearchPartials = [];
+        $expectedOptionalSearchPartials = ['description' => self::DESCRIPTION];
+
+        $this->taskService->getTasksWithFilters($data);
+
+        $this->assertEquals($expectedFilters, $this->filters);
+        $this->assertEquals($expectedOptionalFilters, $this->optionalFilters);
+        $this->assertEquals($expectedSearchPartials, $this->searchPartials);
+        $this->assertEquals($expectedOptionalSearchPartials, $this->optionalSearchPartials);
+    }
+
+    public function testExactMatchForAdmin(): void
+    {
+        $user = self::makeAdmin();
+        $data = new SearchTasksData($user);
+        $data->setExactMatch(true);
+        $data->setPriority(self::PRIORITY);
+        $data->setDescription(self::DESCRIPTION);
+        $data->setStatus(self::STATUS);
+
+        $expectedFilters = ['priority' => self::PRIORITY, 'status' => self::STATUS];
+        $expectedOptionalFilters = [];
+        $expectedSearchPartials = ['description' => self::DESCRIPTION];
+        $expectedOptionalSearchPartials = [];
+
+        $this->taskService->getTasksWithFilters($data);
+
+        $this->assertEquals($expectedFilters, $this->filters);
+        $this->assertEquals($expectedOptionalFilters, $this->optionalFilters);
+        $this->assertEquals($expectedSearchPartials, $this->searchPartials);
+        $this->assertEquals($expectedOptionalSearchPartials, $this->optionalSearchPartials);
     }
 
     public static function filtersProvider(): array
@@ -154,10 +198,18 @@ class TaskServiceTest extends TestCase
      */
     private static function makeSearchData(array $overrides = []): SearchTasksData
     {
-        $data = new SearchTasksData(self::USER_ID);
+        $propertySeterMap = [
+            'description' => 'setDescription',
+            'priority' => 'setPriority',
+            'status' => 'setStatus',
+            'exactMatch' => 'setExactMatch',
+        ];
+
+        $user = self::makeUser();
+        $data = new SearchTasksData($user);
 
         foreach ($overrides as $property => $value) {
-            $data->{$property} = $value;
+            $data->{$propertySeterMap[$property]}($value);
         }
 
         return $data;
@@ -190,5 +242,26 @@ class TaskServiceTest extends TestCase
         );
 
         return $repository;
+    }
+
+    private static function makeAdmin(): User
+    {
+        return self::makeUserWithRole(Role::ADMIN);
+    }
+
+    private static function makeUser(): User
+    {
+        return self::makeUserWithRole(Role::USER);
+    }
+
+    private static function makeUserWithRole(string $roleName): User
+    {
+        $role = new Role();
+        $role->name = $roleName;
+        $user = new User();
+        $user->id = self::USER_ID;
+        $user->setRelation('role', $role);
+
+        return $user;
     }
 }
