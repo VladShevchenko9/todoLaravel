@@ -25,9 +25,9 @@
         <thead>
         <tr>
             <th scope="col">ID</th>
-            @can('viewUserId')
+            @if(auth()->user()->isAdmin())
                 <th scope="col">User ID</th>
-            @endcan
+            @endif
             <th scope="col">Description</th>
             <th scope="col">Priority</th>
             <th scope="col">Status</th>
@@ -39,15 +39,16 @@
         @foreach ($tasks as $task)
             <tr>
                 <td>{{ $task->id }}</td>
-                @can('viewUserId')
+                @if(auth()->user()->isAdmin())
                     <td>{{ $task->user_id }}</td>
-                @endcan
+                @endif
                 <td>{{ $task->description }}</td>
                 <td>{{ $task->priority }}</td>
                 <td>{{ $task->status }}</td>
                 <td>{{ $task->created_at }}</td>
                 <td>
-                    <a href="{{ route('tasks.edit.view', ['id' => $task->id]) }}" class="btn btn-primary btn-lg">Update</a>
+                    <a href="{{ route('tasks.edit.view', ['id' => $task->id]) }}"
+                       class="btn btn-primary btn-lg">Update</a>
                     <form action="{{ route('tasks.delete', ['id' => $task->id]) }}"
                           method="POST"
                           style="display:inline;">

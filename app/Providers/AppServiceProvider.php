@@ -28,10 +28,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         Paginator::useBootstrapFive();
-
-        Gate::define('viewUserId', function (User $user) {
-            return $user->isAdmin();
-        });
     }
 
     protected function configureDefaults(): void
